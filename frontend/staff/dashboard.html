@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kitchen Queue — CampusBite</title>
+<link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+</head>
+<body>
+
+<div id="cb-topbar" class="cb-topbar"></div>
+
+<main class="container-cb" style="padding-top:28px; padding-bottom:80px;">
+
+  <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:20px; flex-wrap:wrap; margin-bottom:22px;">
+    <div>
+      <div class="eyebrow">Live · sorted by pickup slot</div>
+      <h1 class="display" style="font-size:2rem; margin-top:4px;">Kitchen queue</h1>
+    </div>
+    <div id="crowdMeterHost" style="min-width:280px;"></div>
+  </div>
+
+  <div class="cb-card cb-card-pad" style="margin-bottom:24px;">
+    <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+      <div style="flex:1; min-width:220px;">
+        <label style="font-size:0.85rem; font-weight:600; color:var(--text-soft); display:block; margin-bottom:6px;">Scan or type pickup code to close out</label>
+        <input class="form-control" id="scanInput" placeholder="e.g. CB-7F3K9Q" autofocus>
+      </div>
+      <button class="btn-cb btn-cyan" onclick="cbScanToken()">Complete pickup</button>
+    </div>
+  </div>
+
+  <div id="queueHost"></div>
+  <div id="queueEmpty" class="empty-state" style="display:none;">
+    <h3>Queue is clear</h3>
+    <p>No active orders right now.</p>
+  </div>
+
+  <div class="cb-card cb-card-pad" style="margin-top:40px;">
+    <h3 style="font-size:1rem; margin-bottom:6px;">Order history</h3>
+    <p style="font-size:0.85rem; color:var(--text-soft); margin-bottom:14px;">Picked up, cancelled, or no-show orders. Search by order ID, pickup token, or student name.</p>
+    <div style="display:flex; gap:10px; margin-bottom:14px;">
+      <input class="form-control" id="staffHistorySearch" placeholder="Search history…" style="flex:1;">
+      <button class="btn-cb btn-outline" onclick="cbLoadStaffHistory()">Search</button>
+    </div>
+    <div id="staffHistoryHost"></div>
+  </div>
+
+  <h3 style="margin-top:40px; margin-bottom:16px; font-size:1.1rem;">Stock &amp; availability</h3>
+  <div id="stockHost" class="row g-3"></div>
+</main>
+
+<script src="../vendor/axios/axios.min.js"></script>
+<script src="../vendor/sockjs/sockjs.min.js"></script>
+<script src="../vendor/stompjs/stomp.umd.min.js"></script>
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/common.js"></script>
+<script src="../js/staff.js"></script>
+<script>
+  CBAuth.requireRole(["STAFF", "ADMIN"]);
+  cbRenderTopbar("/staff/dashboard.html");
+  cbInitBroadcastBanner();
+  cbInitStaffDashboard();
+</script>
+</body>
+</html>

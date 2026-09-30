@@ -1,0 +1,62 @@
+/* =====================================================================
+   CampusBite design tokens — v2 (dark / neon)
+   No external font/CDN dependency: everything below uses robust system
+   font stacks so the UI renders correctly even fully offline.
+   ===================================================================== */
+:root {
+  /* Core surfaces */
+  --bg: #0a0c12;              /* app background: near-black, faint blue */
+  --bg-elevated: #10131b;     /* topbar / sunken panels */
+  --surface: #161a24;         /* cards */
+  --surface-hover: #1c212e;
+  --surface-2: #1e2330;       /* nested surface (inputs, chips) */
+  --border: #262c3b;
+  --border-strong: #333a4d;
+
+  /* Text */
+  --text: #eef1f7;
+  --text-soft: #9aa3b8;
+  --text-faint: #5c637a;
+
+  /* Neon accents */
+  --neon-cyan: #38f2e0;
+  --neon-cyan-dim: #1fa89c;
+  --neon-magenta: #ff4fd8;
+  --neon-magenta-dim: #b8339e;
+  --neon-lime: #b6ff3c;
+  --neon-amber: #ffb84d;
+  --neon-violet: #9b7bff;
+
+  /* Semantic */
+  --success: var(--neon-lime);
+  --success-soft: rgba(182, 255, 60, 0.12);
+  --warning: var(--neon-amber);
+  --warning-soft: rgba(255, 184, 77, 0.12);
+  --danger: #ff5c7a;
+  --danger-soft: rgba(255, 92, 122, 0.12);
+  --info: var(--neon-cyan);
+  --info-soft: rgba(56, 242, 224, 0.12);
+
+  /* Type */
+  --font-display: "Segoe UI Variable Display", "Segoe UI", ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", "SF Mono", "JetBrains Mono", "Roboto Mono", Consolas, monospace;
+
+  /* Layout */
+  --radius-s: 8px;
+  --radius-m: 14px;
+  --radius-l: 20px;
+  --shadow-card: 0 1px 0 rgba(255,255,255,.02) inset, 0 10px 30px -14px rgba(0,0,0,.6);
+  --shadow-raised: 0 20px 60px -20px rgba(0,0,0,.7);
+  --glow-cyan: 0 0 0 1px rgba(56,242,224,.35), 0 0 24px -4px rgba(56,242,224,.45);
+  --glow-magenta: 0 0 0 1px rgba(255,79,216,.35), 0 0 24px -4px rgba(255,79,216,.45);
+  --glow-lime: 0 0 0 1px rgba(182,255,60,.3), 0 0 20px -4px rgba(182,255,60,.4);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+}

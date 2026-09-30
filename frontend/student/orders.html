@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Orders — CampusBite</title>
+<link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+</head>
+<body>
+
+<div id="cb-topbar" class="cb-topbar"></div>
+
+<main class="container-cb" style="padding-top:28px; padding-bottom:80px;">
+  <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:22px; flex-wrap:wrap; gap:16px;">
+    <div>
+      <div class="eyebrow">Live status</div>
+      <h1 class="display" style="font-size:2rem; margin-top:4px;">Your orders</h1>
+    </div>
+    <div id="trustScoreHost"></div>
+  </div>
+
+  <div id="activeOrderHost"></div>
+
+  <h3 style="margin-top:36px; margin-bottom:16px; font-size:1.1rem;">Order history</h3>
+  <div id="historyHost"></div>
+  <div id="historyEmpty" class="empty-state" style="display:none;">
+    <h3>No orders yet</h3>
+    <p>Head to the menu to place your first order.</p>
+    <a href="/student/dashboard.html" class="btn-cb btn-cyan" style="margin-top:10px;">Browse menu</a>
+  </div>
+</main>
+
+<script src="../vendor/axios/axios.min.js"></script>
+<script src="../vendor/sockjs/sockjs.min.js"></script>
+<script src="../vendor/stompjs/stomp.umd.min.js"></script>
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/common.js"></script>
+<script src="../js/push.js"></script>
+<script src="../js/student.js"></script>
+<script>
+  CBAuth.requireRole(["STUDENT", "TEACHER"]);
+    cbRenderTopbar("/student/orders.html");
+    cbInitBroadcastBanner();
+    cbInitOrdersPage();
+</script>
+</body>
+</html>

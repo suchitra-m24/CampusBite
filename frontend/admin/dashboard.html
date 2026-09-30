@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu Management — CampusBite Admin</title>
+<link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+</head>
+<body>
+
+<div id="cb-topbar" class="cb-topbar"></div>
+
+<main class="container-cb" style="padding-top:28px; padding-bottom:80px;">
+
+  <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:22px; flex-wrap:wrap; gap:16px;">
+    <div>
+      <div class="eyebrow">Admin</div>
+      <h1 class="display" style="font-size:2rem; margin-top:4px;">Menu management</h1>
+    </div>
+    <button class="btn-cb btn-cyan" onclick="cbOpenItemModal()">+ New menu item</button>
+  </div>
+
+  <div class="cb-card cb-card-pad" style="margin-bottom:24px; display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+    <div style="flex:1; min-width:180px;">
+      <label style="font-size:0.85rem; font-weight:600; color:var(--text-soft); display:block; margin-bottom:6px;">Category name</label>
+      <input class="form-control" id="newCategoryName" placeholder="e.g. Breakfast">
+    </div>
+    <div>
+      <label style="font-size:0.85rem; font-weight:600; color:var(--text-soft); display:block; margin-bottom:6px;">Available from (optional)</label>
+      <input type="time" class="form-control" id="newCategoryFrom">
+    </div>
+    <div>
+      <label style="font-size:0.85rem; font-weight:600; color:var(--text-soft); display:block; margin-bottom:6px;">Available to (optional)</label>
+      <input type="time" class="form-control" id="newCategoryTo">
+    </div>
+    <input type="hidden" id="editingCategoryId">
+    <button class="btn-cb btn-outline" id="categorySaveBtn" onclick="cbCreateCategory()">Add category</button>
+    <button class="btn-cb btn-ghost" id="categoryCancelEditBtn" style="display:none;" onclick="cbCancelCategoryEdit()">Cancel edit</button>
+  </div>
+  <p style="font-size:0.78rem; color:var(--text-faint); margin-top:-14px; margin-bottom:24px;">
+    Leave the time fields blank for a category that's always visible (e.g. Beverages). Set both for time-gated categories like Breakfast or Lunch -- items in them are automatically hidden from students outside that window.
+  </p>
+
+  <div id="categoryListHost" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:24px;"></div>
+
+  <div class="cb-card cb-card-pad" style="margin-bottom:24px;">
+    <h3 style="font-size:1rem; margin-bottom:6px;">Find an order</h3>
+    <p style="font-size:0.85rem; color:var(--text-soft); margin-bottom:14px;">Search by order ID, pickup token, student name, email, or login ID.</p>
+    <div style="display:flex; gap:10px; margin-bottom:14px;">
+      <input class="form-control" id="orderSearchInput" placeholder="e.g. 42, CB-7F3K9Q, Suchitra, 1KT23AI055" style="flex:1;">
+      <button class="btn-cb btn-outline" onclick="cbSearchOrders()">Search</button>
+    </div>
+    <div id="orderSearchResults"></div>
+  </div>
+
+  <div id="adminMenuHost" class="row g-3"></div>
+</main>
+
+<!-- Item modal -->
+<div id="itemModalBackdrop" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:150; align-items:center; justify-content:center;">
+  <div class="cb-card cb-card-pad" style="width:520px; max-width:92vw; max-height:90vh; overflow-y:auto;">
+    <h3 id="itemModalTitle" style="margin-bottom:16px;">New menu item</h3>
+    <form id="itemForm" class="form-cb">
+      <input type="hidden" id="itemId">
+      <div style="margin-bottom:14px;"><label>Name</label><input class="form-control" id="itemName" required></div>
+      <div style="margin-bottom:14px;"><label>Description</label><input class="form-control" id="itemDescription"></div>
+      <div style="margin-bottom:14px;"><label>Image URL (optional)</label><input class="form-control" id="itemImageUrl" placeholder="https://..."></div>
+      <div style="display:flex; gap:12px; margin-bottom:14px;">
+        <div style="flex:1;"><label>Price (₹)</label><input type="number" step="0.01" class="form-control" id="itemPrice" required></div>
+        <div style="flex:1;"><label>Prep time (min)</label><input type="number" class="form-control" id="itemPrepTime" value="8" required></div>
+      </div>
+      <div style="display:flex; gap:12px; margin-bottom:14px;">
+        <div style="flex:1;"><label>Category</label><select class="form-select" id="itemCategory"></select></div>
+        <div style="flex:1;">
+          <label>Diet type</label>
+          <select class="form-select" id="itemDietType">
+            <option value="VEG">🟢 Veg</option>
+            <option value="NON_VEG">🔴 Non-veg</option>
+            <option value="EGG">🟡 Contains egg</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:14px;"><label>Allergens (comma-separated, optional)</label><input class="form-control" id="itemAllergens" placeholder="Nuts, Dairy, Gluten"></div>
+      <div style="margin-bottom:14px;"><label>Customization options (comma-separated)</label><input class="form-control" id="itemCustomizations" placeholder="Regular, Extra spicy, Less spicy"></div>
+      <div style="display:flex; gap:20px; margin-bottom:20px;">
+        <label style="display:flex; align-items:center; gap:8px; font-weight:500;"><input type="checkbox" id="itemAvailable" checked> Available</label>
+        <label style="display:flex; align-items:center; gap:8px; font-weight:500;"><input type="checkbox" id="itemSpecial"> Daily special</label>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button type="submit" class="btn-cb btn-cyan" style="flex:1;">Save item</button>
+        <button type="button" class="btn-cb btn-ghost" onclick="cbCloseItemModal()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="../vendor/axios/axios.min.js"></script>
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/common.js"></script>
+<script src="../js/admin.js"></script>
+<script>
+  CBAuth.requireRole(["ADMIN"]);
+  cbRenderTopbar("/admin/dashboard.html");
+  cbInitBroadcastBanner();
+  cbInitAdminMenu();
+</script>
+</body>
+</html>

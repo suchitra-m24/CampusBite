@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root-ci-only
+          MYSQL_DATABASE: campusbite
+          MYSQL_USER: campusbite
+          MYSQL_PASSWORD: campusbite-ci
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -ucampusbite -pcampusbite-ci"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Validate frontend JavaScript
+        run: |
+          for f in frontend/js/*.js; do node --check "$f"; done
+
+      - name: Build and run tests
+        working-directory: backend
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_NAME: campusbite
+          DB_USER: campusbite
+          DB_PASSWORD: campusbite-ci
+          JWT_SECRET: ci-test-secret-not-for-real-use-min-32-bytes-long
+        run: mvn --batch-mode clean verify
+
+      - name: Validate Docker Compose
+        run: docker compose config --quiet
+
+      - name: Build backend container
+        run: docker build --tag campusbite-backend:ci ./backend
+
+      - name: Fresh database Docker smoke test
+        run: |
+          cat > .env.ci <<'ENVEOF'
+          MYSQL_ROOT_PASSWORD=root-ci-only
+          DB_PASSWORD=campusbite-ci
+          JWT_SECRET=ci-docker-secret-not-for-real-use-min-32-bytes-long
+          CORS_ORIGINS=http://localhost:5500,http://127.0.0.1:5500
+          FRONTEND_BASE_URL=http://localhost:5500
+          ENVEOF
+          trap 'docker compose --env-file .env.ci down -v' EXIT
+          docker compose --env-file .env.ci up -d --build
+          for i in $(seq 1 30); do
+            if curl -fsS http://localhost:8080/actuator/health; then exit 0; fi
+            sleep 5
+          done
+          docker compose --env-file .env.ci logs
+          exit 1
+
+      - name: Upload test reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: backend/target/surefire-reports/

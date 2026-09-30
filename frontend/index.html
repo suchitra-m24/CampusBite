@@ -1,0 +1,1298 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>CampusBite — Skip the line</title>
+
+  <link rel="stylesheet"
+        href="vendor/bootstrap/bootstrap.min.css">
+
+  <link rel="stylesheet"
+        href="css/tokens.css">
+
+  <link rel="stylesheet"
+        href="css/styles.css">
+
+  <link rel="icon"
+        type="image/svg+xml"
+        href="/assets/favicon.svg">
+
+
+  <!--
+      Prevent index.html from being visible
+      while authentication/redirect is happening.
+  -->
+  <style>
+
+    body.auth-checking {
+        visibility: hidden;
+    }
+
+  </style>
+
+</head>
+
+
+<body class="auth-checking">
+
+
+<div class="auth-shell">
+
+
+  <!-- =====================================================
+       LEFT SIDE
+       ===================================================== -->
+
+  <div class="auth-hero">
+
+
+    <div class="cb-brand">
+
+      <span class="cb-brand-mark">
+          CB
+      </span>
+
+      CampusBite
+
+    </div>
+
+
+    <div>
+
+      <div class="eyebrow">
+        Order ahead. Skip the line.
+      </div>
+
+
+      <h1
+              class="display"
+              style="
+                    font-size:2.6rem;
+                    line-height:1.15;
+                    margin-top:10px;
+                    max-width:480px;
+                ">
+
+        Your pickup slot, worked out by the kitchen —
+        not guesswork.
+
+      </h1>
+
+
+      <p
+              style="
+                    color:var(--text-soft);
+                    max-width:440px;
+                    margin-top:14px;
+                    font-size:1rem;
+                    line-height:1.6;
+                ">
+
+        CampusBite reads real-time kitchen load and
+        hands you the earliest slot that's actually
+        achievable, so your food is ready the moment
+        you walk in.
+
+      </p>
+
+    </div>
+
+
+    <div class="auth-hero-ticket mono">
+
+
+      <div
+              style="
+                    display:flex;
+                    justify-content:space-between;
+                    color:var(--text-faint);
+                    font-size:0.72rem;
+                    text-transform:uppercase;
+                    letter-spacing:0.08em;
+                ">
+
+        <span>
+            Pickup ticket
+        </span>
+
+        <span style="color:var(--neon-cyan);">
+            CB-7F3K9Q
+        </span>
+
+      </div>
+
+
+      <div
+              style="
+                    height:1px;
+                    border-top:1px dashed var(--border-strong);
+                    margin:14px 0;
+                ">
+      </div>
+
+
+      <div
+              style="
+                    display:flex;
+                    justify-content:space-between;
+                    color:var(--text);
+                    font-size:0.85rem;
+                ">
+
+        <span>
+            Slot
+        </span>
+
+        <span>
+            12:40 – 12:50
+        </span>
+
+      </div>
+
+
+      <div
+              style="
+                    display:flex;
+                    justify-content:space-between;
+                    color:var(--text);
+                    font-size:0.85rem;
+                    margin-top:6px;
+                ">
+
+        <span>
+            Status
+        </span>
+
+        <span style="color:var(--neon-amber);">
+            PREPARING
+        </span>
+
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+
+  <!-- =====================================================
+       RIGHT SIDE
+       ===================================================== -->
+
+  <div class="auth-form-side">
+
+
+    <div class="auth-form-card">
+
+
+      <!-- =================================================
+           LOGIN / REGISTER TOGGLE
+           ================================================= -->
+
+      <div class="auth-toggle">
+
+
+        <button
+                id="tabLogin"
+                class="active"
+                onclick="cbSwitchTab('login')">
+
+          Log in
+
+        </button>
+
+
+        <button
+                id="tabRegister"
+                onclick="cbSwitchTab('register')">
+
+          Create account
+
+        </button>
+
+
+      </div>
+
+
+
+      <!-- =================================================
+           LOGIN FORM
+           ================================================= -->
+
+      <form
+              id="loginForm"
+              class="form-cb">
+
+
+        <h2 style="margin-bottom:4px;">
+
+          Welcome back
+
+        </h2>
+
+
+        <p
+                style="
+                        color:var(--text-soft);
+                        font-size:0.9rem;
+                        margin-bottom:22px;
+                    ">
+
+          Log in to order or manage the kitchen.
+
+        </p>
+
+
+
+        <!-- LOGIN ID -->
+
+        <div style="margin-bottom:16px;">
+
+          <label>
+            Login ID
+          </label>
+
+
+          <input
+                  type="text"
+                  class="form-control"
+                  id="loginId"
+                  placeholder="Your USN, Employee ID, or Staff ID"
+                  required
+                  autocomplete="username">
+
+        </div>
+
+
+
+        <!-- PASSWORD -->
+
+        <div style="margin-bottom:10px;">
+
+          <label>
+            Password
+          </label>
+
+
+          <input
+                  type="password"
+                  class="form-control"
+                  id="loginPassword"
+                  placeholder="••••••••"
+                  required
+                  autocomplete="current-password">
+
+        </div>
+
+
+
+        <!-- FORGOT PASSWORD -->
+
+        <div
+                style="
+                        text-align:right;
+                        margin-bottom:16px;
+                    ">
+
+          <a
+                  href="#"
+                  style="font-size:0.82rem;"
+                  onclick="cbOpenForgotPassword(event)">
+
+            Forgot password?
+
+          </a>
+
+        </div>
+
+
+
+        <!-- LOGIN BUTTON -->
+
+        <button
+                type="submit"
+                class="btn-cb btn-cyan btn-block">
+
+          Log in
+
+        </button>
+
+
+
+        <!-- DEMO ACCOUNTS -->
+
+        <div
+                class="cb-card cb-card-pad"
+                style="
+                        margin-top:22px;
+                        font-size:0.8rem;
+                        color:var(--text-soft);
+                    ">
+
+
+          <strong style="color:var(--text);">
+            Demo setup
+          </strong>
+          <br>
+          Student accounts can be created using the registration form.
+          Privileged demo accounts are only seeded when explicitly enabled through environment variables.
+
+
+        </div>
+
+
+      </form>
+
+
+
+      <!-- =================================================
+           REGISTER FORM
+           ================================================= -->
+
+      <form
+              id="registerForm"
+              class="form-cb"
+              style="display:none;">
+
+
+        <h2 style="margin-bottom:4px;">
+
+          Create your account
+
+        </h2>
+
+
+        <p
+                style="
+                        color:var(--text-soft);
+                        font-size:0.9rem;
+                        margin-bottom:22px;
+                    ">
+
+          Students get a ₹200 wallet welcome bonus.
+
+        </p>
+
+
+
+        <!-- FULL NAME -->
+
+        <div style="margin-bottom:16px;">
+
+          <label>
+            Full name
+          </label>
+
+
+          <input
+                  type="text"
+                  class="form-control"
+                  id="regName"
+                  placeholder="Aisha Khan"
+                  required>
+
+        </div>
+
+
+
+        <!-- EMAIL -->
+
+        <div style="margin-bottom:16px;">
+
+          <label>
+            Email
+          </label>
+
+
+          <input
+                  type="email"
+                  class="form-control"
+                  id="regEmail"
+                  placeholder="you@campus.edu"
+                  required>
+
+        </div>
+
+
+
+        <!-- ROLE -->
+
+        <div style="margin-bottom:16px;">
+
+          <label>
+            I am a
+          </label>
+
+
+          <select
+                  class="form-select"
+                  id="regRole"
+                  onchange="cbUpdateLoginIdLabel()">
+
+            <option value="STUDENT">
+              Student
+            </option>
+
+          </select>
+
+        </div>
+
+
+
+        <!-- LOGIN ID -->
+
+        <div style="margin-bottom:16px;">
+
+          <label id="regLoginIdLabel">
+
+            USN
+
+          </label>
+
+
+          <input
+                  type="text"
+                  class="form-control"
+                  id="regLoginId"
+                  placeholder="e.g. 1KT23AI055"
+                  required
+                  autocomplete="username">
+
+        </div>
+
+        <div id="studentAcademicFields">
+          <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
+            <div style="flex:1; min-width:150px;">
+              <label>Department</label>
+              <input type="text" class="form-control" id="regDepartment" placeholder="AI & ML">
+            </div>
+            <div style="flex:1; min-width:150px;">
+              <label>Academic year</label>
+              <select class="form-select" id="regAcademicYear">
+                <option value="">Select year</option>
+                <option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option>
+              </select>
+            </div>
+            <div style="width:110px;">
+              <label>Section</label>
+              <input type="text" class="form-control" id="regSection" placeholder="A">
+            </div>
+          </div>
+        </div>
+
+        <!-- PASSWORD -->
+
+        <div style="margin-bottom:20px;">
+
+          <label>
+            Password
+          </label>
+
+
+          <input
+                  type="password"
+                  class="form-control"
+                  id="regPassword"
+                  placeholder="At least 8 characters"
+                  required
+                  minlength="8"
+                  autocomplete="new-password">
+
+        </div>
+
+
+
+        <!-- REGISTER BUTTON -->
+
+        <button
+                type="submit"
+                class="btn-cb btn-cyan btn-block">
+
+          Create account
+
+        </button>
+
+
+      </form>
+
+
+    </div>
+
+  </div>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     FORGOT PASSWORD MODAL
+     ========================================================= -->
+
+<div
+        id="forgotPasswordBackdrop"
+        style="
+        display:none;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.55);
+        z-index:180;
+        align-items:center;
+        justify-content:center;
+    ">
+
+
+  <div
+          class="cb-card cb-card-pad"
+          style="
+            width:400px;
+            max-width:90vw;
+        ">
+
+
+    <h3 style="margin-bottom:6px;">
+
+      Reset your password
+
+    </h3>
+
+
+    <p
+            style="
+                font-size:0.85rem;
+                color:var(--text-soft);
+                margin-bottom:16px;
+            ">
+
+      Enter your Login ID and we'll generate a reset link.
+
+    </p>
+
+
+
+    <div
+            class="form-cb"
+            style="margin-bottom:16px;">
+
+
+      <label>
+        Login ID
+      </label>
+
+
+      <input
+              type="text"
+              class="form-control"
+              id="forgotLoginId"
+              placeholder="Your USN or Staff/Admin ID">
+
+
+    </div>
+
+
+
+    <div id="forgotResultHost"></div>
+
+
+
+    <div
+            style="
+                display:flex;
+                gap:10px;
+                margin-top:16px;
+            ">
+
+
+      <button
+              class="btn-cb btn-cyan"
+              style="flex:1;"
+              onclick="cbSubmitForgotPassword()">
+
+        Send reset link
+
+      </button>
+
+
+      <button
+              class="btn-cb btn-ghost"
+              onclick="cbCloseForgotPassword()">
+
+        Close
+
+      </button>
+
+
+    </div>
+
+
+  </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+     ========================================================= -->
+
+<script src="vendor/axios/axios.min.js"></script>
+
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+
+
+
+<script>
+
+
+  /* =====================================================
+     TAB SWITCH
+     ===================================================== */
+
+  function cbSwitchTab(tab) {
+
+
+      document
+          .getElementById("tabLogin")
+          .classList
+          .toggle(
+              "active",
+              tab === "login"
+          );
+
+
+      document
+          .getElementById("tabRegister")
+          .classList
+          .toggle(
+              "active",
+              tab === "register"
+          );
+
+
+      document
+          .getElementById("loginForm")
+          .style
+          .display =
+              tab === "login"
+                  ? "block"
+                  : "none";
+
+
+      document
+          .getElementById("registerForm")
+          .style
+          .display =
+              tab === "register"
+                  ? "block"
+                  : "none";
+
+  }
+
+
+
+  /* =====================================================
+     UPDATE LOGIN ID LABEL
+     ===================================================== */
+
+  function cbUpdateLoginIdLabel() {
+
+
+      const role =
+          document
+              .getElementById("regRole")
+              .value;
+
+
+      const label =
+          document
+              .getElementById("regLoginIdLabel");
+
+
+      const input =
+          document
+              .getElementById("regLoginId");
+
+
+
+      const academic = document.getElementById("studentAcademicFields");
+      if (academic) academic.style.display = role === "STUDENT" ? "block" : "none";
+
+      if (role === "STUDENT") {
+
+
+          label.textContent =
+              "USN";
+
+
+          input.placeholder =
+              "e.g. 1KT23AI055";
+
+
+      }
+
+
+      else {
+          label.textContent = "USN";
+          input.placeholder = "e.g. 1KT23AI055";
+      }
+
+  }
+
+
+
+  /* =====================================================
+     REDIRECT BASED ON ROLE
+     ===================================================== */
+
+  function cbRedirectForRole(role) {
+
+
+      if (role === "STUDENT") {
+
+
+          window.location.replace(
+              "/student/dashboard.html"
+          );
+
+
+      }
+
+
+      else if (role === "STAFF") {
+
+
+          window.location.replace(
+              "/staff/dashboard.html"
+          );
+
+
+      }
+
+
+      else {
+
+
+          window.location.replace(
+              "/admin/dashboard.html"
+          );
+
+      }
+
+  }
+
+
+
+  /* =====================================================
+     INITIAL AUTH CHECK
+
+     If already logged in:
+         index.html stays hidden
+         redirect immediately
+
+     If not logged in:
+         show index.html
+     ===================================================== */
+
+  if (CBAuth.isLoggedIn()) {
+
+
+      cbRedirectForRole(
+          CBAuth.getUser().role
+      );
+
+
+  }
+
+
+  else {
+
+
+      document
+          .body
+          .classList
+          .remove("auth-checking");
+
+  }
+
+
+
+  /* =====================================================
+     LOGIN
+
+     IMPORTANT FIX:
+     Hide index.html BEFORE making the API request.
+     This prevents the visible index -> dashboard flash.
+     ===================================================== */
+
+  document
+      .getElementById("loginForm")
+      .addEventListener(
+          "submit",
+          async (e) => {
+
+
+              e.preventDefault();
+
+
+
+              const btn =
+                  e.target.querySelector(
+                      "button[type=submit]"
+                  );
+
+
+
+              /*
+               * Hide index immediately.
+               *
+               * This happens BEFORE the request to
+               * /api/auth/login is made.
+               */
+
+              document
+                  .body
+                  .classList
+                  .add("auth-checking");
+
+
+
+              btn.disabled = true;
+
+              btn.textContent =
+                  "Logging in…";
+
+
+
+              try {
+
+
+                  const res =
+                      await cbApi.post(
+                          "/api/auth/login",
+                          {
+
+                              loginId:
+                                  document
+                                      .getElementById("loginId")
+                                      .value
+                                      .trim(),
+
+                              password:
+                                  document
+                                      .getElementById("loginPassword")
+                                      .value
+
+                          }
+                      );
+
+
+
+                  /*
+                   * Save authentication session.
+                   */
+
+                  CBAuth.setSession(
+                      res.data
+                  );
+
+
+
+                  /*
+                   * Redirect using the
+                   * authenticated user's role.
+                   */
+
+                  cbRedirectForRole(
+                      res.data.user.role
+                  );
+
+
+              }
+
+
+              catch (err) {
+
+
+                  /*
+                   * Login failed.
+                   *
+                   * Show index page again so the
+                   * user can correct their details.
+                   */
+
+                  document
+                      .body
+                      .classList
+                      .remove(
+                          "auth-checking"
+                      );
+
+
+
+                  cbToast(
+                      cbErrorMessage(err),
+                      "error"
+                  );
+
+
+
+                  btn.disabled = false;
+
+                  btn.textContent =
+                      "Log in";
+
+              }
+
+          }
+      );
+
+
+
+  /* =====================================================
+     REGISTER
+     ===================================================== */
+
+  document
+      .getElementById("registerForm")
+      .addEventListener(
+          "submit",
+          async (e) => {
+
+
+              e.preventDefault();
+
+
+
+              const btn =
+                  e.target.querySelector(
+                      "button[type=submit]"
+                  );
+
+
+
+              /*
+               * Hide index immediately while
+               * registration is processing.
+               */
+
+              document
+                  .body
+                  .classList
+                  .add("auth-checking");
+
+
+
+              btn.disabled = true;
+
+              btn.textContent =
+                  "Creating account…";
+
+
+
+              try {
+
+
+                  const role =
+                      document
+                          .getElementById("regRole")
+                          .value;
+
+
+
+                  /*
+                   * Public registration is restricted to STUDENT.
+                   * Staff, teacher and admin accounts are provisioned by an Admin.
+                   */
+
+                  if (role !== "STUDENT") {
+                      throw new Error("Only Student accounts can be created here.");
+                  }
+
+
+
+                  const res =
+                      await cbApi.post(
+                          "/api/auth/register",
+                          {
+
+                              fullName:
+                                  document
+                                      .getElementById("regName")
+                                      .value,
+
+                              email:
+                                  document
+                                      .getElementById("regEmail")
+                                      .value,
+
+                              loginId:
+                                  document
+                                      .getElementById("regLoginId")
+                                      .value
+                                      .trim(),
+
+                              password:
+                                  document
+                                      .getElementById("regPassword")
+                                      .value,
+
+                              role: role,
+                              department: role === "STUDENT" ? document.getElementById("regDepartment").value.trim() : null,
+                              academicYear: role === "STUDENT" ? document.getElementById("regAcademicYear").value : null,
+                              section: role === "STUDENT" ? document.getElementById("regSection").value.trim() : null
+
+                          }
+                      );
+
+
+
+                  /*
+                   * Save session.
+                   */
+
+                  CBAuth.setSession(
+                      res.data
+                  );
+
+
+
+                  /*
+                   * Store development
+                   * verification link.
+                   */
+
+                  if (
+                      res.data.devVerificationLink
+                  ) {
+
+
+                      sessionStorage.setItem(
+                          "cb_pending_verification_link",
+                          res.data.devVerificationLink
+                      );
+
+                  }
+
+
+
+                  /*
+                   * Redirect after
+                   * successful registration.
+                   */
+
+                  cbRedirectForRole(
+                      res.data.user.role
+                  );
+
+
+              }
+
+
+              catch (err) {
+
+
+                  /*
+                   * Registration failed.
+                   * Show the page again.
+                   */
+
+                  document
+                      .body
+                      .classList
+                      .remove(
+                          "auth-checking"
+                      );
+
+
+
+                  cbToast(
+                      cbErrorMessage(err),
+                      "error"
+                  );
+
+
+
+                  btn.disabled = false;
+
+                  btn.textContent =
+                      "Create account";
+
+              }
+
+          }
+      );
+
+
+
+  /* =====================================================
+     OPEN FORGOT PASSWORD
+     ===================================================== */
+
+  function cbOpenForgotPassword(e) {
+
+
+      e.preventDefault();
+
+
+      document
+          .getElementById("forgotResultHost")
+          .innerHTML = "";
+
+
+      document
+          .getElementById("forgotLoginId")
+          .value = "";
+
+
+      document
+          .getElementById("forgotPasswordBackdrop")
+          .style
+          .display = "flex";
+
+  }
+
+
+
+  /* =====================================================
+     CLOSE FORGOT PASSWORD
+     ===================================================== */
+
+  function cbCloseForgotPassword() {
+
+
+      document
+          .getElementById("forgotPasswordBackdrop")
+          .style
+          .display = "none";
+
+  }
+
+
+
+  /* =====================================================
+     SUBMIT FORGOT PASSWORD
+     ===================================================== */
+
+  async function cbSubmitForgotPassword() {
+
+
+      const loginId =
+          document
+              .getElementById("forgotLoginId")
+              .value
+              .trim();
+
+
+
+      if (!loginId) {
+
+          return;
+
+      }
+
+
+
+      try {
+
+
+          const res =
+              await cbApi.post(
+                  "/api/auth/forgot-password",
+                  {
+                      loginId
+                  }
+              );
+
+
+
+          const host =
+              document
+                  .getElementById(
+                      "forgotResultHost"
+                  );
+
+
+
+          if (res.data.devResetLink) {
+
+
+              host.innerHTML = `
+
+                  <div
+                      class="cb-card cb-card-pad"
+                      style="font-size:0.82rem;">
+
+                      ${res.data.message || "If that Login ID exists, a password reset link has been generated."}
+
+                      <br><br>
+
+                      No email service is wired up
+                      in this demo -- here's your
+                      reset link directly:
+
+                      <br>
+
+                      <a
+                          href="${res.data.devResetLink}"
+                          style="word-break:break-all;">
+
+                          ${res.data.devResetLink}
+
+                      </a>
+
+                  </div>
+
+              `;
+
+
+          }
+
+
+          else {
+
+
+              host.innerHTML = `
+
+                  <div
+                      class="cb-card cb-card-pad"
+                      style="font-size:0.82rem;">
+
+                      ${res.data.message || "If that Login ID exists, a reset link has been generated."}
+
+                  </div>
+
+              `;
+
+          }
+
+
+      }
+
+
+      catch (err) {
+
+
+          cbToast(
+              cbErrorMessage(err),
+              "error"
+          );
+
+      }
+
+  }
+
+
+</script>
+
+
+
+</body>
+</html>
+```

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account — CampusBite</title>
+<link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+</head>
+<body>
+
+<div id="cb-topbar" class="cb-topbar"></div>
+
+<main class="container-cb" style="padding-top:28px; padding-bottom:80px; max-width:720px;">
+  <div class="eyebrow">Account</div>
+  <h1 class="display" style="font-size:2rem; margin-top:4px; margin-bottom:24px;">Your account</h1>
+
+  <div id="verificationHost" style="margin-bottom:20px;"></div>
+
+  <div id="profileHost" style="margin-bottom:20px;"></div>
+
+  <div id="billingHost"></div>
+
+  <div class="cb-card cb-card-pad">
+    <h3 style="font-size:1rem; margin-bottom:6px;">Active sessions</h3>
+    <p style="font-size:0.85rem; color:var(--text-soft); margin-bottom:16px;">
+      Every device you're currently logged in on. Revoke any you don't recognize.
+    </p>
+    <div id="sessionsHost"></div>
+  </div>
+</main>
+
+<script src="vendor/axios/axios.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/common.js"></script>
+<script>
+  CBAuth.requireRole(["STUDENT", "TEACHER", "STAFF", "ADMIN"]);
+  cbRenderTopbar("/account.html");
+
+  async function initAccount() {
+    await Promise.all([loadVerification(), loadSessions(), loadBilling(), loadProfile()]);
+}
+
+async function loadProfile() {
+    try {
+      const res = await cbApi.get("/api/me");
+      const u = res.data;
+      const host = document.getElementById("profileHost");
+      host.innerHTML = `
+        <div class="cb-card cb-card-pad">
+          <div class="eyebrow">College profile</div>
+          <h3 style="font-size:1rem; margin:4px 0 14px;">${cbEscapeHtml(u.fullName)}</h3>
+          <div style="display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; font-size:.85rem;">
+            <div><span style="color:var(--text-soft);">Login ID</span><br><strong>${cbEscapeHtml(u.loginId)}</strong></div>
+            <div><span style="color:var(--text-soft);">Role</span><br><strong>${cbEscapeHtml(u.role)}</strong></div>
+            <div><span style="color:var(--text-soft);">Department</span><br><strong>${cbEscapeHtml(u.department || "—")}</strong></div>
+            <div><span style="color:var(--text-soft);">Academic year</span><br><strong>${cbEscapeHtml(u.academicYear || "—")}</strong></div>
+            <div><span style="color:var(--text-soft);">Section</span><br><strong>${cbEscapeHtml(u.section || "—")}</strong></div>
+            <div><span style="color:var(--text-soft);">Payment</span><br><strong>${cbEscapeHtml(u.paymentMode)}</strong></div>
+          </div>
+        </div>`;
+    } catch (e) {}
+}
+
+async function loadBilling() {
+    const host = document.getElementById("billingHost");
+    if (!host) return;
+    try {
+        const me = await cbApi.get("/api/me");
+        if (me.data.paymentMode !== "POSTPAID") { host.innerHTML = ""; return; }
+
+        const [current, statements] = await Promise.all([
+            cbApi.get("/api/student/billing/current"),
+            cbApi.get("/api/student/billing/statements"),
+        ]);
+
+        const statementRows = statements.data.map(s => `
+            <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:0.85rem;">
+                <span>${s.month}/${s.year} · ${s.orderCount} orders</span>
+                <span>
+                    ${cbFormatMoney(s.totalAmount)}
+                    <span class="badge-status ${s.settled ? 'status-PICKED_UP' : 'status-PLACED'}" style="margin-left:8px;">${s.settled ? 'Settled' : 'Pending'}</span>
+                </span>
+            </div>`).join("") || `<div style="font-size:0.82rem; color:var(--text-faint);">No past statements yet.</div>`;
+
+        host.innerHTML = `
+            <div class="cb-card cb-card-pad" style="margin-bottom:20px;">
+                <h3 style="font-size:1rem; margin-bottom:6px;">Billing (Postpaid)</h3>
+                <p style="font-size:0.85rem; color:var(--text-soft); margin-bottom:12px;">
+                    Your orders aren't charged instantly -- costs accumulate and get billed monthly, same as a staff meal deduction.
+                </p>
+                <div style="font-size:0.9rem; margin-bottom:14px;">
+                    <strong>This month so far:</strong> ${cbFormatMoney(current.data.runningTotal)} across ${current.data.orderCount} orders
+                </div>
+                <div><strong style="font-size:0.85rem;">Past statements</strong></div>
+                ${statementRows}
+            </div>`;
+    } catch (e) { /* non-critical */ }
+}
+  async function loadVerification() {
+    let user;
+    try {
+      const res = await cbApi.get("/api/me");
+      user = res.data;
+      // Keep the cached copy in sync so the topbar and other pages don't show stale data either.
+      localStorage.setItem("cb_user", JSON.stringify(user));
+    } catch (err) {
+      user = CBAuth.getUser(); // fall back to cache if the fetch fails
+    }
+    const host = document.getElementById("verificationHost");
+    if (user.emailVerified) {
+      host.innerHTML = `<div class="cb-card cb-card-pad" style="border-color:var(--neon-lime);"><span style="color:var(--neon-lime); font-weight:700;">✓ Email verified</span></div>`;
+      return;
+    }
+    host.innerHTML = `
+      <div class="cb-card cb-card-pad" style="border-color:var(--neon-amber);">
+        <div style="font-weight:700; color:var(--neon-amber); margin-bottom:6px;">Email not verified</div>
+        <p style="font-size:0.85rem; color:var(--text-soft); margin-bottom:10px;">Email delivery is not configured for this demo environment.</p>
+        <button class="btn-cb btn-outline btn-sm" onclick="resendVerification()">Request verification email</button>
+        <div id="verificationLinkHost" style="margin-top:10px;"></div>
+      </div>`;
+  }
+
+  async function resendVerification() {
+    try {
+      const res = await cbApi.post("/api/auth/resend-verification");
+      const link = res.data.devVerificationLink;
+      document.getElementById("verificationLinkHost").textContent = link
+        ? "Development verification link generated. Open it only in a local development environment."
+        : "Verification email requested. Configure an email provider to deliver the link.";
+    } catch (err) {
+      cbToast(cbErrorMessage(err), "error");
+    }
+  }
+
+  async function loadSessions() {
+    try {
+      const res = await cbApi.post("/api/auth/sessions", {});
+      document.getElementById("sessionsHost").innerHTML = res.data.map(s => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border);">
+          <div>
+            <div style="font-weight:600; font-size:0.9rem;">${cbEscapeHtml(s.userAgent || "Unknown device")} ${s.current ? '<span style="color:var(--neon-cyan); font-size:0.75rem;">· this device</span>' : ""}</div>
+                     <div style="font-size:0.78rem; color:var(--text-soft);">Signed in ${new Date(s.createdAt).toLocaleString()}</div>
+          </div>
+          ${s.current ? "" : `<button class="btn-cb btn-danger btn-sm" onclick="revokeSession(${s.id})">Revoke</button>`}
+        </div>`).join("") || `<div class="empty-state">No active sessions found.</div>`;
+    } catch (err) {
+      cbToast(cbErrorMessage(err), "error");
+    }
+  }
+
+  async function revokeSession(id) {
+    try {
+      await cbApi.post("/api/auth/sessions/revoke", { sessionId: id });
+      cbToast("Session revoked", "success");
+      loadSessions();
+    } catch (err) {
+      cbToast(cbErrorMessage(err), "error");
+    }
+  }
+
+  initAccount();
+</script>
+</body>
+</html>

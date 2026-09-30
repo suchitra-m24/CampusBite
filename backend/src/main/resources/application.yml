@@ -1,0 +1,73 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: campusbite
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:campusbite}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+  flyway:
+    enabled: true
+    # This project is migration-first. A brand-new campusbite database must
+    # execute V1, V2 and V3 rather than baseline past V1.
+    baseline-on-migrate: false
+  jackson:
+    time-zone: UTC
+
+campusbite:
+  seed:
+    demo-accounts-enabled: ${SEED_DEMO_ACCOUNTS:false}
+  auth:
+    dev-reset-links-enabled: ${DEV_RESET_LINKS_ENABLED:false}
+  frontend-base-url: ${FRONTEND_BASE_URL:http://localhost:5500}
+  time-zone: ${APP_TIME_ZONE:Asia/Kolkata}
+  cookie:
+    secure: ${COOKIE_SECURE:false}
+  jwt:
+    secret: ${JWT_SECRET}
+    access-token-expiry-ms: 900000        # 15 minutes
+    refresh-token-expiry-ms: 1209600000   # 14 days
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:5500,http://127.0.0.1:5500}
+  slot:
+    default-window-minutes: 10
+    default-capacity-per-window: 15
+  kitchen-load:
+    recalculation-fixed-rate-ms: 120000   # every 2 minutes
+    comfortable-concurrent-capacity: 15
+  order:
+    cancellation-window-minutes: 15       # must cancel at least this long before pickup slot starts
+    no-show-grace-minutes: 20             # minutes past slot end before an unclaimed READY order is marked NO_SHOW
+  wallet:
+    signup-bonus: 200.00
+    max-top-up: 100000.00
+  push:
+    vapid-public-key: ${VAPID_PUBLIC_KEY:BH3_xGmOueoJ0h9wbavFrEhtYnRfl2V94E13tgZh9bBTI3DvvaqF7htnbVl1cdsqlDfHbKvPaz7mBM8OJeQgBKM}
+    vapid-private-key: ${VAPID_PRIVATE_KEY:TJ5Dh0ywD8BR_3B5qARI1jCdpN0iX7m9P3QvgiGzWSg}
+    vapid-subject: mailto:admin@campusbite.dev
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  level:
+    com.campusbite: INFO

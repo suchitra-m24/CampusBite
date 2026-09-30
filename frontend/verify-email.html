@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify Email — CampusBite</title>
+<link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+</head>
+<body>
+
+<div style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;">
+  <div class="cb-card cb-card-pad" style="max-width:440px; width:100%; text-align:center;">
+    <div class="cb-brand" style="justify-content:center; margin-bottom:20px;">
+      <span class="cb-brand-mark">CB</span> CampusBite
+    </div>
+    <div id="statusHost">
+      <h3>Verifying your email…</h3>
+      <p style="color:var(--text-soft); font-size:0.9rem;">One moment.</p>
+    </div>
+  </div>
+</div>
+
+<script src="vendor/axios/axios.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script>
+  async function run() {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    const host = document.getElementById("statusHost");
+
+    if (!token) {
+      host.innerHTML = `<h3 style="color:var(--danger);">No verification token found</h3><p style="color:var(--text-soft); font-size:0.9rem;">Check that you opened the full link.</p>`;
+      return;
+    }
+
+    try {
+      await cbApi.post("/api/auth/verify-email", { token });
+      host.innerHTML = `
+        <h3 style="color:var(--success);">Email verified!</h3>
+        <p style="color:var(--text-soft); font-size:0.9rem; margin-bottom:18px;">You're all set.</p>
+        <a href="/index.html" class="btn-cb btn-cyan">Go to login</a>`;
+    } catch (err) {
+      host.innerHTML = `
+        <h3 style="color:var(--danger);">Couldn't verify</h3>
+        <p style="color:var(--text-soft); font-size:0.9rem; margin-bottom:18px;">${cbErrorMessage(err)}</p>
+        <a href="/index.html" class="btn-cb btn-outline">Back to login</a>`;
+    }
+  }
+  run();
+</script>
+</body>
+</html>

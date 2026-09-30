@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analytics — CampusBite Admin</title>
+<link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+</head>
+<body>
+
+<div id="cb-topbar" class="cb-topbar"></div>
+
+<main class="container-cb" style="padding-top:28px; padding-bottom:80px;">
+  <div class="eyebrow">Admin</div>
+  <h1 class="display" style="font-size:2rem; margin-top:4px; margin-bottom:24px;">Analytics</h1>
+
+  <div class="row g-3" id="summaryCards" style="margin-bottom:28px;"></div>
+
+  <div class="row g-4">
+    <div class="col-12 col-lg-6">
+      <div class="cb-card cb-card-pad">
+        <h3 style="font-size:1rem; margin-bottom:14px;">Peak hours (kitchen load %)</h3>
+        <canvas id="peakHoursChart" height="220"></canvas>
+      </div>
+    </div>
+    <div class="col-12 col-lg-6">
+      <div class="cb-card cb-card-pad">
+        <h3 style="font-size:1rem; margin-bottom:14px;">Best sellers</h3>
+        <canvas id="bestSellersChart" height="220"></canvas>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="cb-card cb-card-pad">
+        <h3 style="font-size:1rem; margin-bottom:14px;">Slot utilization (next 24h)</h3>
+        <canvas id="slotUtilChart" height="140"></canvas>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="../vendor/axios/axios.min.js"></script>
+<script src="../vendor/chartjs/chart.umd.js"></script>
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/common.js"></script>
+<script src="../js/admin.js"></script>
+<script>
+  CBAuth.requireRole(["ADMIN"]);
+  cbRenderTopbar("/admin/analytics.html");
+  cbInitAnalytics();
+</script>
+</body>
+</html>

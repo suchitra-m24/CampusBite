@@ -1,0 +1,505 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Slots & Users — CampusBite Admin</title>
+
+  <link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+</head>
+
+<body>
+
+<div id="cb-topbar" class="cb-topbar"></div>
+
+<main class="container-cb" style="padding-top:28px; padding-bottom:80px;">
+
+  <div class="eyebrow">Admin</div>
+
+  <h1
+          class="display"
+          style="font-size:2rem; margin-top:4px; margin-bottom:24px;"
+  >
+    Slot capacity &amp; users
+  </h1>
+
+
+  <!-- =====================================================
+       SINGLE-CANTEEN OPERATING HOURS & HOLIDAYS
+       ===================================================== -->
+
+  <div class="cb-card cb-card-pad" style="margin-bottom:24px;">
+    <h3 style="font-size:1rem; margin-bottom:6px;">Canteen hours & closures</h3>
+    <p style="font-size:0.85rem; color:var(--text-soft); margin-bottom:14px;">CampusBite is configured for one college canteen. Orders and pickup slots are kept inside its operating hours, and holidays/maintenance closures block new pickup slots.</p>
+    <div id="canteenSettingsHost"></div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-top:14px;">
+      <div><label>Canteen name</label><input class="form-control" id="canteenName" style="width:220px;"></div>
+      <div><label>Opens</label><input class="form-control" type="time" id="canteenOpen"></div>
+      <div><label>Closes</label><input class="form-control" type="time" id="canteenClose"></div>
+      <label style="display:flex;gap:8px;align-items:center;padding-bottom:9px;"><input type="checkbox" id="canteenOrdering"> Ordering enabled</label>
+      <button class="btn-cb btn-cyan" onclick="saveCanteenSettings()">Save hours</button>
+    </div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-top:18px;">
+      <div><label>Closure date</label><input class="form-control" type="date" id="closureDate"></div>
+      <div><label>Reason</label><input class="form-control" id="closureReason" placeholder="College holiday / maintenance" style="width:260px;"></div>
+      <button class="btn-cb btn-outline" onclick="addCanteenClosure()">Add closure</button>
+    </div>
+    <div id="closuresHost" style="margin-top:14px;"></div>
+  </div>
+
+  <!-- =====================================================
+       BROADCAST BANNER
+       ===================================================== -->
+
+  <div class="cb-card cb-card-pad" style="margin-bottom:24px;">
+
+    <h3 style="font-size:1rem; margin-bottom:6px;">
+      Broadcast banner
+    </h3>
+
+    <p
+            style="font-size:0.85rem; color:var(--text-soft); margin-bottom:14px;"
+    >
+      Shown at the top of every student/staff page until dismissed or
+      cleared. Setting a new message replaces any current one.
+    </p>
+
+    <div
+            id="currentBroadcastHost"
+            style="margin-bottom:14px;"
+    ></div>
+
+    <div
+            style="display:flex; gap:10px; align-items:flex-end;"
+    >
+
+      <div style="flex:1;">
+
+        <label
+                style="
+            font-size:0.8rem;
+            font-weight:600;
+            color:var(--text-soft);
+            display:block;
+            margin-bottom:6px;
+          "
+        >
+          Message
+        </label>
+
+        <input
+                class="form-control"
+                id="broadcastMessage"
+                placeholder="e.g. Kitchen closed 2-3pm today for cleaning"
+        >
+
+      </div>
+
+      <button
+              class="btn-cb btn-cyan"
+              onclick="cbSetBroadcast()"
+      >
+        Publish
+      </button>
+
+      <button
+              class="btn-cb btn-danger"
+              onclick="cbClearBroadcast()"
+      >
+        Clear
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       POSTPAID BILLING
+       ===================================================== -->
+
+  <div class="cb-card cb-card-pad" style="margin-bottom:24px;">
+
+    <h3 style="font-size:1rem; margin-bottom:6px;">
+      Postpaid billing
+    </h3>
+
+    <p
+            style="
+        font-size:0.85rem;
+        color:var(--text-soft);
+        margin-bottom:14px;
+      "
+    >
+      Generates statements for teachers on postpaid billing. Runs
+      automatically for the previous month on the 1st -- use this to
+      generate on demand (e.g. for testing, or a month you missed).
+    </p>
+
+    <div
+            style="
+        display:flex;
+        gap:10px;
+        margin-bottom:16px;
+        align-items:flex-end;
+      "
+    >
+
+      <div>
+
+        <label
+                style="
+            font-size:0.8rem;
+            font-weight:600;
+            color:var(--text-soft);
+            display:block;
+            margin-bottom:6px;
+          "
+        >
+          Year
+        </label>
+
+        <input
+                type="number"
+                class="form-control"
+                id="billingYear"
+                style="width:110px;"
+        >
+
+      </div>
+
+
+      <div>
+
+        <label
+                style="
+            font-size:0.8rem;
+            font-weight:600;
+            color:var(--text-soft);
+            display:block;
+            margin-bottom:6px;
+          "
+        >
+          Month (1-12)
+        </label>
+
+        <input
+                type="number"
+                min="1"
+                max="12"
+                class="form-control"
+                id="billingMonth"
+                style="width:110px;"
+        >
+
+      </div>
+
+
+      <button
+              class="btn-cb btn-cyan"
+              onclick="cbGenerateStatements()"
+      >
+        Generate statements
+      </button>
+
+    </div>
+
+    <div id="unsettledStatementsHost"></div>
+
+  </div>
+
+
+  <!-- =====================================================
+       CREATE STAFF / ADMIN ACCOUNT
+       ===================================================== -->
+
+  <div class="cb-card cb-card-pad" style="margin-bottom:24px;">
+
+    <h3 style="font-size:1rem; margin-bottom:6px;">
+      Create staff or admin account
+    </h3>
+
+    <p
+            style="
+        font-size:0.85rem;
+        color:var(--text-soft);
+        margin-bottom:14px;
+      "
+    >
+      Staff and Admin accounts can't be self-registered -- create them here
+      instead.
+    </p>
+
+    <div
+            style="
+        display:flex;
+        gap:10px;
+        margin-bottom:10px;
+        flex-wrap:wrap;
+      "
+    >
+
+      <input
+              class="form-control"
+              id="newAccountName"
+              placeholder="Full name"
+              style="flex:1; min-width:160px;"
+      >
+
+      <input
+              class="form-control"
+              id="newAccountEmail"
+              placeholder="Email"
+              type="email"
+              style="flex:1; min-width:160px;"
+      >
+
+    </div>
+
+
+    <div
+            style="
+        display:flex;
+        gap:10px;
+        margin-bottom:14px;
+        flex-wrap:wrap;
+      "
+    >
+
+      <input
+              class="form-control"
+              id="newAccountLoginId"
+              placeholder="Login ID (Staff ID / Admin ID)"
+              style="flex:1; min-width:160px;"
+      >
+
+      <input
+              type="password"
+              class="form-control"
+              id="newAccountPassword"
+              placeholder="Password (min 8 chars)"
+              style="flex:1; min-width:160px;"
+      >
+
+      <select
+              class="form-select"
+              id="newAccountRole"
+              style="width:140px;"
+      >
+        <option value="STAFF">Kitchen staff</option>
+        <option value="TEACHER">Teacher</option>
+        <option value="ADMIN">Admin</option>
+      </select>
+
+    </div>
+
+
+    <button
+            class="btn-cb btn-cyan"
+            onclick="cbCreatePrivilegedAccount()"
+    >
+      Create account
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       SLOT CAPACITY + USERS
+       ===================================================== -->
+
+  <div class="row g-4">
+
+    <!-- Slot Capacity -->
+
+    <div class="col-12 col-lg-6">
+
+      <div class="cb-card cb-card-pad">
+
+        <h3 style="font-size:1rem; margin-bottom:6px;">
+          Slot capacity by time of day
+        </h3>
+
+        <p
+                style="
+            font-size:0.85rem;
+            color:var(--text-soft);
+            margin-bottom:16px;
+          "
+        >
+          Set how many orders each recurring time window can absorb.
+          Slot allocation always respects these limits.
+        </p>
+
+        <div
+                style="
+            display:flex;
+            gap:10px;
+            margin-bottom:16px;
+            align-items:flex-end;
+          "
+        >
+
+          <div>
+
+            <label
+                    style="
+                font-size:0.8rem;
+                font-weight:600;
+                color:var(--text-soft);
+                display:block;
+                margin-bottom:6px;
+              "
+            >
+              Window start
+            </label>
+
+            <input
+                    type="time"
+                    class="form-control"
+                    id="slotTime"
+                    step="60"
+            >
+
+          </div>
+
+
+          <div>
+
+            <label
+                    style="
+                font-size:0.8rem;
+                font-weight:600;
+                color:var(--text-soft);
+                display:block;
+                margin-bottom:6px;
+              "
+            >
+              Max orders
+            </label>
+
+            <input
+                    type="number"
+                    class="form-control"
+                    id="slotCapacity"
+                    value="15"
+                    style="width:110px;"
+            >
+
+          </div>
+
+
+          <button
+                  class="btn-cb btn-cyan"
+                  onclick="cbSaveSlotCapacity()"
+          >
+            Save
+          </button>
+
+        </div>
+
+        <div id="slotCapacityHost"></div>
+
+      </div>
+
+    </div>
+
+
+    <!-- Users -->
+
+    <div class="col-12 col-lg-6">
+
+      <div class="cb-card cb-card-pad">
+
+        <h3 style="font-size:1rem; margin-bottom:6px;">
+          Users
+        </h3>
+
+        <p
+                style="
+            font-size:0.85rem;
+            color:var(--text-soft);
+            margin-bottom:16px;
+          "
+        >
+          Deactivate an account to immediately block sign-in.
+        </p>
+
+        <div
+                id="usersHost"
+                style="
+            max-height:520px;
+            overflow-y:auto;
+          "
+        ></div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</main>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
+<script src="../vendor/axios/axios.min.js"></script>
+
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/common.js"></script>
+<script src="../js/admin.js"></script>
+
+<script>
+  CBAuth.requireRole(["ADMIN"]);
+
+  cbRenderTopbar("/admin/settings.html");
+  loadCanteenAdmin();
+
+  cbInitSettings();
+
+async function loadCanteenAdmin() {
+  try {
+    const [settings, closures] = await Promise.all([cbApi.get("/api/admin/canteen"), cbApi.get("/api/admin/canteen/closures")]);
+    const c = settings.data;
+    document.getElementById("canteenName").value = c.canteenName;
+    document.getElementById("canteenOpen").value = c.openingTime.slice(0,5);
+    document.getElementById("canteenClose").value = c.closingTime.slice(0,5);
+    document.getElementById("canteenOrdering").checked = c.orderingEnabled;
+    renderCanteenClosures(closures.data);
+  } catch(e) { cbToast(cbErrorMessage(e), "error"); }
+}
+async function saveCanteenSettings() {
+  try {
+    await cbApi.put("/api/admin/canteen", { canteenName: document.getElementById("canteenName").value.trim(), openingTime: document.getElementById("canteenOpen").value, closingTime: document.getElementById("canteenClose").value, orderingEnabled: document.getElementById("canteenOrdering").checked });
+    cbToast("Canteen hours updated", "success");
+  } catch(e) { cbToast(cbErrorMessage(e), "error"); }
+}
+async function addCanteenClosure() {
+  try {
+    await cbApi.post("/api/admin/canteen/closures", { date: document.getElementById("closureDate").value, reason: document.getElementById("closureReason").value.trim() });
+    document.getElementById("closureReason").value = "";
+    cbToast("Closure added", "success");
+    loadCanteenAdmin();
+  } catch(e) { cbToast(cbErrorMessage(e), "error"); }
+}
+function renderCanteenClosures(rows) {
+  const host = document.getElementById("closuresHost");
+  host.innerHTML = rows.length ? rows.map(r => `<div style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.84rem;"><span><strong>${r.date}</strong> · ${cbEscapeHtml(r.reason)}</span><button class="btn-cb btn-danger btn-sm" onclick="removeCanteenClosure(${r.id})">Remove</button></div>`).join("") : `<div style="font-size:.82rem;color:var(--text-faint);">No upcoming closures.</div>`;
+}
+async function removeCanteenClosure(id) {
+  try { await cbApi.delete(`/api/admin/canteen/closures/${id}`); cbToast("Closure removed", "success"); loadCanteenAdmin(); } catch(e) { cbToast(cbErrorMessage(e), "error"); }
+}
+</script>
+
+</body>
+</html>
+```
